@@ -54,7 +54,15 @@ export default function RootLayout({ children }) {
                 <span className="text-xl font-semibold text-text-primary">Comfrt</span>
               </a>
 
-              <nav className="flex items-center gap-2">
+              <nav className="flex items-center gap-1">
+                <a
+                  href="/search"
+                  className="text-sm text-text-secondary hover:text-text-primary
+                           transition-colors duration-300 px-3 py-2 rounded-xl
+                           hover:bg-warm-100"
+                >
+                  Search
+                </a>
                 <a
                   href="/map"
                   className="text-sm text-text-secondary hover:text-text-primary
@@ -69,7 +77,7 @@ export default function RootLayout({ children }) {
                            transition-colors duration-300 px-3 py-2 rounded-xl
                            hover:bg-warm-100"
                 >
-                  Plan Outing
+                  Planner
                 </a>
                 <a
                   href="/onboarding"
@@ -95,7 +103,7 @@ export default function RootLayout({ children }) {
                 Made with care for people who need calm spaces
               </p>
               <p className="text-xs text-text-muted mt-2">
-                Powered by Yelp AI API
+                Powered by Claude AI + Yelp Fusion API
               </p>
             </div>
           </footer>
