@@ -306,7 +306,7 @@ function MapLegend() {
   return (
     <div style={{
       position: 'absolute',
-      bottom: '24px',
+      bottom: '100px',
       left: '16px',
       backgroundColor: 'white',
       borderRadius: '16px',

@@ -96,7 +96,7 @@ function MapPageContent() {
     <div style={{
       display: 'flex',
       flexDirection: 'column',
-      height: '100vh',
+      height: 'calc(100vh - 130px)',
       backgroundColor: '#faf9f7'
     }}>
       {/* Header */}
@@ -256,7 +256,7 @@ function MapPageContent() {
       {venues.length > 0 && (
         <div style={{
           position: 'absolute',
-          bottom: '100px',
+          bottom: '24px',
           right: '16px',
           backgroundColor: 'white',
           borderRadius: '12px',

@@ -7,10 +7,10 @@ import VenueCard, { VenueCardCompact } from './VenueCard';
 import { useRouter } from 'next/navigation';
 
 const EXAMPLE_PROMPTS = [
-  "Find a quiet Italian restaurant for date night",
-  "I need a calm coffee shop to work from",
-  "Where can I eat lunch without loud music?",
-  "Peaceful dinner spot for someone with sensory sensitivity",
+  "Find a quiet Italian restaurant in San Francisco",
+  "I need a calm coffee shop to work from in Brooklyn",
+  "Peaceful brunch spot in Los Angeles",
+  "Cozy dinner spot for a date in Chicago",
 ];
 
 export default function ChatInterface() {
