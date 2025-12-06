@@ -171,7 +171,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+    <div className="p-4 md:p-6 max-w-7xl mx-auto w-full">
       {/* Header */}
       <div style={{
         display: 'flex',
@@ -211,12 +211,7 @@ export default function AdminPage() {
       ) : stats ? (
         <>
           {/* Today's Stats */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '16px',
-            marginBottom: '32px',
-          }}>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
             <StatCard
               icon={<Eye size={20} />}
               label="Page Views"
@@ -287,11 +282,7 @@ export default function AdminPage() {
           </div>
 
           {/* Bottom Row */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '24px',
-          }}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Top Locations */}
             <div style={{
               backgroundColor: 'white',
