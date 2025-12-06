@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Filter, MapPin, List } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { trackMapView, trackFilterUsed } from '@/lib/analytics';
 
 // Dynamic import for map component (requires browser APIs)
 const ComfortMap = dynamic(() => import('@/components/ComfortMap'), {
@@ -32,29 +33,43 @@ function MapPageContent() {
   // Get venues from URL params or fetch from session storage
   useEffect(() => {
     const venueData = searchParams.get('venues');
+    let loadedVenues = [];
     if (venueData) {
       try {
-        const parsed = JSON.parse(decodeURIComponent(venueData));
-        setVenues(parsed);
+        loadedVenues = JSON.parse(decodeURIComponent(venueData));
+        setVenues(loadedVenues);
       } catch {
         // Fall back to session storage
-        loadFromStorage();
+        loadedVenues = loadFromStorage();
       }
     } else {
-      loadFromStorage();
+      loadedVenues = loadFromStorage();
     }
     setLoading(false);
+
+    // Track map view
+    if (loadedVenues.length > 0) {
+      trackMapView(loadedVenues.length);
+    }
   }, [searchParams]);
 
   const loadFromStorage = () => {
     try {
       const stored = sessionStorage.getItem('comfrt-map-venues');
       if (stored) {
-        setVenues(JSON.parse(stored));
+        const parsed = JSON.parse(stored);
+        setVenues(parsed);
+        return parsed;
       }
     } catch {
       // Ignore errors
     }
+    return [];
+  };
+
+  const handleFilterChange = (value) => {
+    setMinScore(value);
+    trackFilterUsed('min_comfort_score', value);
   };
 
   const handleVenueClick = (venue) => {
@@ -181,7 +196,7 @@ function MapPageContent() {
               min="0"
               max="100"
               value={minScore}
-              onChange={(e) => setMinScore(parseInt(e.target.value))}
+              onChange={(e) => handleFilterChange(parseInt(e.target.value))}
               style={{
                 width: '100%',
                 accentColor: '#96a87f'

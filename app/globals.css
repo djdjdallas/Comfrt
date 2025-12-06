@@ -467,3 +467,22 @@ body {
     opacity: 1;
   }
 }
+
+/* ========================================
+   Mapbox Popup Overrides
+   ======================================== */
+
+.mapboxgl-popup-content {
+  padding: 12px !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  max-width: 260px !important;
+}
+
+.mapboxgl-popup-close-button {
+  display: none !important;
+}
+
+.mapboxgl-popup-tip {
+  border-top-color: white !important;
+}

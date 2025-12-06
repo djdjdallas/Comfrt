@@ -2,6 +2,7 @@ import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import BackgroundBlobs from '@/components/BackgroundBlobs';
 import Header from '@/components/Header';
+import AnalyticsProvider from '@/components/AnalyticsProvider';
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -38,7 +39,9 @@ export default function RootLayout({ children }) {
 
           {/* Main Content */}
           <main className="flex-1 flex flex-col w-full">
-            {children}
+            <AnalyticsProvider>
+              {children}
+            </AnalyticsProvider>
           </main>
 
           {/* Footer */}

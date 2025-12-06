@@ -5,6 +5,7 @@ import { Send, Sparkles, Map } from 'lucide-react';
 import ChatBubble, { TypingIndicator } from './ChatBubble';
 import VenueCard, { VenueCardCompact } from './VenueCard';
 import { useRouter } from 'next/navigation';
+import { trackSearch } from '@/lib/analytics';
 
 const EXAMPLE_PROMPTS = [
   "Find a quiet Italian restaurant in San Francisco",
@@ -66,6 +67,10 @@ export default function ChatInterface() {
           content: data.message,
           venues: data.venues || [],
         }]);
+
+        // Track successful search
+        const locationMatch = userMessage.match(/in\s+([^,.\n]+)/i);
+        trackSearch(userMessage, locationMatch?.[1] || 'unknown', data.venues?.length || 0);
       }
     } catch {
       setMessages(prev => [...prev, {

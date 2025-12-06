@@ -4,13 +4,19 @@ import { MapPin, Star, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import ComfortMeter from './ComfortMeter';
 import ComfortChip, { getComfortChips } from './ComfortChip';
+import { trackVenueClick } from '@/lib/analytics';
 
 export default function VenueCard({ venue, onClick }) {
   const chips = venue.comfort_attributes || getComfortChips(venue);
 
+  const handleClick = () => {
+    trackVenueClick(venue);
+    onClick?.(venue);
+  };
+
   return (
     <article
-      onClick={() => onClick?.(venue)}
+      onClick={handleClick}
       style={{
         backgroundColor: '#ffffff',
         borderRadius: '24px',

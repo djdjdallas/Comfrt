@@ -160,9 +160,10 @@ function VenuePopup({ venue, onClose, onViewDetails }) {
 
   return (
     <div style={{
-      width: '260px',
-      padding: '0',
-      fontFamily: 'inherit'
+      width: '240px',
+      padding: '4px',
+      fontFamily: 'inherit',
+      boxSizing: 'border-box'
     }}>
       {/* Header with close button */}
       <div style={{
@@ -253,19 +254,20 @@ function VenuePopup({ venue, onClose, onViewDetails }) {
       )}
 
       {/* Action Buttons */}
-      <div style={{ display: 'flex', gap: '8px' }}>
+      <div style={{ display: 'flex', gap: '6px', width: '100%' }}>
         <button
           onClick={() => onViewDetails && onViewDetails(venue)}
           style={{
             flex: 1,
-            padding: '8px 12px',
-            fontSize: '13px',
+            padding: '8px 8px',
+            fontSize: '12px',
             fontWeight: '500',
-            borderRadius: '10px',
+            borderRadius: '8px',
             backgroundColor: '#96a87f',
             color: 'white',
             border: 'none',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            whiteSpace: 'nowrap'
           }}
         >
           View Details
@@ -276,16 +278,17 @@ function VenuePopup({ venue, onClose, onViewDetails }) {
           rel="noopener noreferrer"
           style={{
             flex: 1,
-            padding: '8px 12px',
-            fontSize: '13px',
+            padding: '8px 8px',
+            fontSize: '12px',
             fontWeight: '500',
-            borderRadius: '10px',
+            borderRadius: '8px',
             backgroundColor: '#f3f1ed',
             color: '#3d3d3d',
             border: 'none',
             cursor: 'pointer',
             textDecoration: 'none',
-            textAlign: 'center'
+            textAlign: 'center',
+            whiteSpace: 'nowrap'
           }}
         >
           Directions
