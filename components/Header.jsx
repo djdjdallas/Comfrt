@@ -15,7 +15,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 glass-soft border-b border-warm-100">
-      <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between w-full">
         {/* Logo */}
         <a href="/" className="flex items-center gap-2 group">
           <div className="w-9 h-9 rounded-xl bg-sage-400 flex items-center justify-center
