@@ -18,6 +18,8 @@ export default function ChatInterface() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [chatId, setChatId] = useState(null); // Track Yelp AI conversation ID
+  const [userLocation, setUserLocation] = useState(null); // User's geolocation
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const router = useRouter();
@@ -29,6 +31,24 @@ export default function ChatInterface() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Get user's location on mount
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        () => {
+          // User denied location or error - continue without it
+          console.log('Location not available');
+        }
+      );
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,7 +69,9 @@ export default function ChatInterface() {
         body: JSON.stringify({
           message: userMessage,
           preferences,
-          history: messages.slice(-10), // Send last 10 messages for context
+          chatId, // Pass chat_id for multi-turn Yelp AI conversations
+          latitude: userLocation?.latitude,
+          longitude: userLocation?.longitude,
         }),
       });
 
@@ -62,6 +84,11 @@ export default function ChatInterface() {
           isError: true,
         }]);
       } else {
+        // Store the chat_id for conversation continuity
+        if (data.chatId) {
+          setChatId(data.chatId);
+        }
+
         setMessages(prev => [...prev, {
           role: 'assistant',
           content: data.message,

@@ -4,7 +4,7 @@ import { calculateComfortScore, generateRecommendationReason } from '@/lib/comfo
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { message, preferences = {}, history = [], location } = body;
+    const { message, preferences = {}, chatId = null, latitude = null, longitude = null } = body;
 
     if (!message?.trim()) {
       return Response.json(
@@ -22,13 +22,14 @@ export async function POST(request) {
     try {
       const result = await chatWithYelp(message, {
         preferences,
-        history,
-        location,
+        chatId,      // Pass chat_id for multi-turn conversations
+        latitude,    // User's location for Yelp AI context
+        longitude,
       });
 
       return Response.json(result);
     } catch (apiError) {
-      console.error('Yelp API Error:', apiError);
+      console.error('Yelp AI API Error:', apiError);
 
       // Fall back to demo mode if API fails
       return Response.json(getDemoResponse(message, preferences));
