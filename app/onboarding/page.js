@@ -14,6 +14,7 @@ export default function OnboardingPage() {
     lightSensitivity: 3,
     spaciousnessPreference: 3,
     location: '',
+    zipCode: '',
     otherNeeds: '',
   });
   const [isLoaded, setIsLoaded] = useState(false);
@@ -25,6 +26,7 @@ export default function OnboardingPage() {
       lightSensitivity: saved.lightSensitivity || 3,
       spaciousnessPreference: saved.spaciousnessPreference || 3,
       location: saved.location || '',
+      zipCode: saved.zipCode || '',
       otherNeeds: saved.otherNeeds || '',
     });
     setIsLoaded(true);
@@ -60,36 +62,70 @@ export default function OnboardingPage() {
       description: 'Where would you like to find calm spaces?',
       icon: MapPin,
       content: (
-        <div>
-          <label
-            htmlFor="location"
-            style={{
-              display: 'block',
-              fontSize: '16px',
-              fontWeight: '500',
-              color: '#3d3d3d',
-              marginBottom: '12px'
-            }}
-          >
-            City or Neighborhood
-          </label>
-          <input
-            id="location"
-            type="text"
-            value={preferences.location}
-            onChange={(e) => updatePreference('location', e.target.value)}
-            placeholder="E.g., Denver, CO or Brooklyn, NY"
-            style={{
-              width: '100%',
-              padding: '16px 20px',
-              fontSize: '18px',
-              backgroundColor: '#faf9f7',
-              border: '2px solid #e8e4dc',
-              borderRadius: '16px',
-              color: '#3d3d3d',
-              fontFamily: 'inherit',
-            }}
-          />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div>
+            <label
+              htmlFor="location"
+              style={{
+                display: 'block',
+                fontSize: '16px',
+                fontWeight: '500',
+                color: '#3d3d3d',
+                marginBottom: '12px'
+              }}
+            >
+              City or Neighborhood
+            </label>
+            <input
+              id="location"
+              type="text"
+              value={preferences.location}
+              onChange={(e) => updatePreference('location', e.target.value)}
+              placeholder="E.g., Denver, CO or Brooklyn, NY"
+              style={{
+                width: '100%',
+                padding: '16px 20px',
+                fontSize: '18px',
+                backgroundColor: '#faf9f7',
+                border: '2px solid #e8e4dc',
+                borderRadius: '16px',
+                color: '#3d3d3d',
+                fontFamily: 'inherit',
+              }}
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="zipCode"
+              style={{
+                display: 'block',
+                fontSize: '16px',
+                fontWeight: '500',
+                color: '#3d3d3d',
+                marginBottom: '12px'
+              }}
+            >
+              Zip Code <span style={{ fontWeight: '400', color: '#9a9a9a' }}>(for closer results)</span>
+            </label>
+            <input
+              id="zipCode"
+              type="text"
+              value={preferences.zipCode}
+              onChange={(e) => updatePreference('zipCode', e.target.value)}
+              placeholder="E.g., 80202"
+              maxLength={10}
+              style={{
+                width: '100%',
+                padding: '16px 20px',
+                fontSize: '18px',
+                backgroundColor: '#faf9f7',
+                border: '2px solid #e8e4dc',
+                borderRadius: '16px',
+                color: '#3d3d3d',
+                fontFamily: 'inherit',
+              }}
+            />
+          </div>
         </div>
       ),
     },
