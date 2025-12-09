@@ -160,7 +160,7 @@ function VenuePopup({ venue, onClose, onViewDetails }) {
 
   return (
     <div style={{
-      width: '240px',
+      width: '300px',
       padding: '4px',
       fontFamily: 'inherit',
       boxSizing: 'border-box'
@@ -247,7 +247,7 @@ function VenuePopup({ venue, onClose, onViewDetails }) {
           marginBottom: '12px'
         }}>
           <MapPin size={14} style={{ color: '#96a87f', flexShrink: 0, marginTop: '2px' }} />
-          <span style={{ fontSize: '12px', color: '#6b6b6b' }}>
+          <span style={{ fontSize: '12px', color: '#6b6b6b', wordBreak: 'break-word' }}>
             {venue.location.address1}, {venue.location.city}
           </span>
         </div>

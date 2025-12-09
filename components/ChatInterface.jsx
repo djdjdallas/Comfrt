@@ -6,12 +6,20 @@ import ChatBubble, { TypingIndicator } from './ChatBubble';
 import VenueCard, { VenueCardCompact } from './VenueCard';
 import { useRouter } from 'next/navigation';
 import { trackSearch } from '@/lib/analytics';
+import { getPreferences } from '@/lib/preferences';
 
-const EXAMPLE_PROMPTS = [
+const FALLBACK_PROMPTS = [
   "Find a quiet Italian restaurant in San Francisco",
   "I need a calm coffee shop to work from in Brooklyn",
   "Peaceful brunch spot in Los Angeles",
   "Cozy dinner spot for a date in Chicago",
+];
+
+const getLocationBasedPrompts = (locationName) => [
+  `Find a quiet Italian restaurant in ${locationName}`,
+  `I need a calm coffee shop to work from in ${locationName}`,
+  `Peaceful brunch spot in ${locationName}`,
+  `Cozy dinner spot for a date in ${locationName}`,
 ];
 
 export default function ChatInterface() {
@@ -20,6 +28,8 @@ export default function ChatInterface() {
   const [isLoading, setIsLoading] = useState(false);
   const [chatId, setChatId] = useState(null); // Track Yelp AI conversation ID
   const [userLocation, setUserLocation] = useState(null); // User's geolocation
+  const [locationName, setLocationName] = useState(null); // User's city/area name
+  const [locationLoading, setLocationLoading] = useState(true); // Track if we're still fetching location
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const router = useRouter();
@@ -32,21 +42,55 @@ export default function ChatInterface() {
     scrollToBottom();
   }, [messages]);
 
-  // Get user's location on mount
+  // Get user's location on mount - prefer saved preferences, fall back to geolocation
   useEffect(() => {
+    // First, check if user has a saved location from onboarding
+    const preferences = getPreferences();
+    if (preferences.location) {
+      setLocationName(preferences.location);
+      setLocationLoading(false);
+      return; // Use saved location, no need for geolocation
+    }
+
+    // No saved location - try geolocation as fallback
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation({ latitude, longitude });
+
+          // Reverse geocode to get location name
+          try {
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
+              { headers: { 'User-Agent': 'comfrt-app' } }
+            );
+            const data = await response.json();
+            // Prefer city, then town, then suburb, then county
+            const name = data.address?.city ||
+                         data.address?.town ||
+                         data.address?.suburb ||
+                         data.address?.county ||
+                         data.address?.state;
+            if (name) {
+              setLocationName(name);
+            }
+          } catch {
+            // Reverse geocoding failed - continue without location name
+            console.log('Reverse geocoding failed');
+          } finally {
+            setLocationLoading(false);
+          }
         },
         () => {
           // User denied location or error - continue without it
           console.log('Location not available');
+          setLocationLoading(false);
         }
       );
+    } else {
+      // Geolocation not supported
+      setLocationLoading(false);
     }
   }, []);
 
@@ -134,7 +178,7 @@ export default function ChatInterface() {
       {/* Messages Area */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '24px 16px' }}>
         {messages.length === 0 ? (
-          <WelcomeScreen onExampleClick={handleExampleClick} />
+          <WelcomeScreen onExampleClick={handleExampleClick} locationName={locationName} locationLoading={locationLoading} />
         ) : (
           <div style={{ maxWidth: '672px', margin: '0 auto' }}>
             {messages.map((msg, idx) => (
@@ -267,7 +311,12 @@ export default function ChatInterface() {
   );
 }
 
-function WelcomeScreen({ onExampleClick }) {
+function WelcomeScreen({ onExampleClick, locationName, locationLoading }) {
+  // Use location-based prompts when available, otherwise fall back to defaults
+  const prompts = locationName
+    ? getLocationBasedPrompts(locationName)
+    : FALLBACK_PROMPTS;
+
   return (
     <div style={{ width: '100%', padding: '48px 24px' }}>
       <div style={{ maxWidth: '576px', margin: '0 auto' }}>
@@ -319,11 +368,18 @@ function WelcomeScreen({ onExampleClick }) {
           }}>
             Try something like
           </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {EXAMPLE_PROMPTS.map((prompt, idx) => (
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            opacity: locationLoading ? 0.5 : 1,
+            transition: 'opacity 0.3s ease'
+          }}>
+            {prompts.map((prompt, idx) => (
               <button
                 key={idx}
                 onClick={() => onExampleClick(prompt)}
+                disabled={locationLoading}
                 style={{
                   width: '100%',
                   padding: '16px 20px',
@@ -332,7 +388,7 @@ function WelcomeScreen({ onExampleClick }) {
                   color: '#6b6b6b',
                   textAlign: 'left',
                   border: 'none',
-                  cursor: 'pointer',
+                  cursor: locationLoading ? 'wait' : 'pointer',
                   fontSize: '16px',
                 }}
               >
