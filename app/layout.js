@@ -1,31 +1,33 @@
-import { Plus_Jakarta_Sans } from 'next/font/google';
-import './globals.css';
-import BackgroundBlobs from '@/components/BackgroundBlobs';
-import Header from '@/components/Header';
-import AnalyticsProvider from '@/components/AnalyticsProvider';
+import { Plus_Jakarta_Sans } from "next/font/google";
+import "./globals.css";
+import BackgroundBlobs from "@/components/BackgroundBlobs";
+import Header from "@/components/Header";
+import AnalyticsProvider from "@/components/AnalyticsProvider";
 
 const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  display: 'swap',
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
 });
 
 export const metadata = {
-  title: 'Comfrt - Find Your Calm Space',
-  description: 'Discover sensory-friendly restaurants and venues. Perfect for people with autism, ADHD, migraines, anxiety, or anyone who prefers calm, quiet spaces.',
-  keywords: 'sensory friendly, quiet restaurants, autism friendly, ADHD, calm venues, peaceful dining',
+  title: "Comfrt - Find Your Calm Space",
+  description:
+    "Discover sensory-friendly restaurants and venues. Perfect for people with autism, ADHD, migraines, anxiety, or anyone who prefers calm, quiet spaces.",
+  keywords:
+    "sensory friendly, quiet restaurants, autism friendly, ADHD, calm venues, peaceful dining",
   openGraph: {
-    title: 'Comfrt - Find Your Calm Space',
-    description: 'Discover sensory-friendly restaurants and venues.',
-    type: 'website',
+    title: "Comfrt - Find Your Calm Space",
+    description: "Discover sensory-friendly restaurants and venues.",
+    type: "website",
   },
 };
 
 export const viewport = {
-  width: 'device-width',
+  width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: '#fdfcfa',
+  themeColor: "#fdfcfa",
 };
 
 export default function RootLayout({ children }) {
@@ -39,9 +41,7 @@ export default function RootLayout({ children }) {
 
           {/* Main Content */}
           <main className="flex-1 flex flex-col w-full">
-            <AnalyticsProvider>
-              {children}
-            </AnalyticsProvider>
+            <AnalyticsProvider>{children}</AnalyticsProvider>
           </main>
 
           {/* Footer */}
@@ -51,7 +51,7 @@ export default function RootLayout({ children }) {
                 Made with care for people who need calm spaces
               </p>
               <p className="text-xs text-text-muted mt-2">
-                Powered by Claude AI + Yelp Fusion API
+                Powered by Claude AI + Yelp AI API
               </p>
             </div>
           </footer>
