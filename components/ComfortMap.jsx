@@ -155,6 +155,7 @@ export default function ComfortMap({
             onClose={() => setSelectedVenue(null)}
             closeButton={false}
             offset={25}
+            maxWidth="380px"
           >
             <VenuePopup
               venue={selectedVenue}
@@ -177,8 +178,8 @@ function VenuePopup({ venue, onClose, onViewDetails }) {
   return (
     <div
       style={{
-        width: "300px",
-        padding: "4px",
+        width: "340px",
+        padding: "8px",
         fontFamily: "inherit",
         boxSizing: "border-box",
       }}
@@ -295,15 +296,15 @@ function VenuePopup({ venue, onClose, onViewDetails }) {
       )}
 
       {/* Action Buttons */}
-      <div style={{ display: "flex", gap: "6px", width: "100%" }}>
+      <div style={{ display: "flex", gap: "10px", width: "100%" }}>
         <button
           onClick={() => onViewDetails && onViewDetails(venue)}
           style={{
             flex: 1,
-            padding: "8px 8px",
-            fontSize: "12px",
+            padding: "10px 16px",
+            fontSize: "14px",
             fontWeight: "500",
-            borderRadius: "8px",
+            borderRadius: "10px",
             backgroundColor: "#96a87f",
             color: "white",
             border: "none",
@@ -319,10 +320,10 @@ function VenuePopup({ venue, onClose, onViewDetails }) {
           rel="noopener noreferrer"
           style={{
             flex: 1,
-            padding: "8px 8px",
-            fontSize: "12px",
+            padding: "10px 16px",
+            fontSize: "14px",
             fontWeight: "500",
-            borderRadius: "8px",
+            borderRadius: "10px",
             backgroundColor: "#f3f1ed",
             color: "#3d3d3d",
             border: "none",
