@@ -22,6 +22,8 @@ const getLocationBasedPrompts = (locationName) => [
   `Cozy dinner spot for a date in ${locationName}`,
 ];
 
+const STORAGE_KEY = 'comfrt-chat-session';
+
 export default function ChatInterface() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -30,6 +32,7 @@ export default function ChatInterface() {
   const [userLocation, setUserLocation] = useState(null); // User's geolocation
   const [locationName, setLocationName] = useState(null); // User's city/area name
   const [locationLoading, setLocationLoading] = useState(true); // Track if we're still fetching location
+  const [isRestored, setIsRestored] = useState(false); // Track if session was restored
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const router = useRouter();
@@ -37,6 +40,33 @@ export default function ChatInterface() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  // Restore chat session from sessionStorage on mount
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const { messages: savedMessages, chatId: savedChatId } = JSON.parse(saved);
+        if (savedMessages?.length > 0) {
+          setMessages(savedMessages);
+          setChatId(savedChatId);
+        }
+      }
+    } catch {
+      // Ignore storage errors
+    }
+    setIsRestored(true);
+  }, []);
+
+  // Save chat session to sessionStorage whenever messages change
+  useEffect(() => {
+    if (!isRestored) return; // Don't save until we've restored
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ messages, chatId }));
+    } catch {
+      // Ignore storage errors
+    }
+  }, [messages, chatId, isRestored]);
 
   useEffect(() => {
     scrollToBottom();
@@ -159,6 +189,17 @@ export default function ChatInterface() {
     inputRef.current?.focus();
   };
 
+  const handleNewSearch = () => {
+    setMessages([]);
+    setChatId(null);
+    setInput('');
+    try {
+      sessionStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // Ignore storage errors
+    }
+  };
+
   const handleVenueClick = (venue) => {
     router.push(`/venue/${venue.id}`);
   };
@@ -181,6 +222,28 @@ export default function ChatInterface() {
           <WelcomeScreen onExampleClick={handleExampleClick} locationName={locationName} locationLoading={locationLoading} />
         ) : (
           <div style={{ maxWidth: '672px', margin: '0 auto' }}>
+            {/* New Search Button */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: '16px'
+            }}>
+              <button
+                onClick={handleNewSearch}
+                style={{
+                  padding: '8px 16px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  borderRadius: '20px',
+                  backgroundColor: '#f3f1ed',
+                  color: '#6b6b6b',
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                + New Search
+              </button>
+            </div>
             {messages.map((msg, idx) => (
               <div key={idx}>
                 <ChatBubble message={msg.content} isUser={msg.role === 'user'}>

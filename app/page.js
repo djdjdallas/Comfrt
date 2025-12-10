@@ -74,7 +74,7 @@ export default function LandingPage() {
           <span
             style={{ fontSize: "14px", color: "#5a7a52", fontWeight: "500" }}
           >
-            Powered by Yelp Ai
+            Powered by Yelp AI
           </span>
         </div>
 
