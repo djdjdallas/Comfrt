@@ -124,6 +124,16 @@ export default function ChatInterface() {
     }
   }, []);
 
+  // Get the most recent venues from messages for follow-up filtering
+  const getLastVenues = () => {
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].venues && messages[i].venues.length > 0) {
+        return messages[i].venues;
+      }
+    }
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
@@ -137,6 +147,9 @@ export default function ChatInterface() {
       // Get user preferences from localStorage
       const preferences = JSON.parse(localStorage.getItem('comfrt-preferences') || '{}');
 
+      // Get previous venues for potential follow-up filtering
+      const previousVenues = getLastVenues();
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -146,6 +159,7 @@ export default function ChatInterface() {
           chatId, // Pass chat_id for multi-turn Yelp AI conversations
           latitude: userLocation?.latitude,
           longitude: userLocation?.longitude,
+          previousVenues, // Pass previous results for follow-up filtering
         }),
       });
 
@@ -167,6 +181,7 @@ export default function ChatInterface() {
           role: 'assistant',
           content: data.message,
           venues: data.venues || [],
+          wasFiltered: data.wasFiltered || false, // Track if this was a filtered result
         }]);
 
         // Track successful search

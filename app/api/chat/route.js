@@ -1,16 +1,55 @@
 import { chatWithYelp } from '@/lib/yelp';
 import { calculateComfortScore, generateRecommendationReason } from '@/lib/comfort-score';
+import { analyzeFollowUp, filterVenues, generateFilterResponse } from '@/lib/followup-detection';
 
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { message, preferences = {}, chatId = null, latitude = null, longitude = null } = body;
+    const {
+      message,
+      preferences = {},
+      chatId = null,
+      latitude = null,
+      longitude = null,
+      previousVenues = null, // Pass previous search results for filtering
+    } = body;
 
     if (!message?.trim()) {
       return Response.json(
         { error: 'Please enter a message' },
         { status: 400 }
       );
+    }
+
+    // Check if this is a filter request on existing results
+    const hasExistingResults = previousVenues && previousVenues.length > 0;
+    const followUpAnalysis = analyzeFollowUp(message, hasExistingResults);
+
+    console.log('\n[Follow-up Analysis]', {
+      message: message.substring(0, 50),
+      isFilter: followUpAnalysis.isFilter,
+      detectedFilters: followUpAnalysis.detectedFilters,
+      confidence: followUpAnalysis.confidence,
+    });
+
+    // If this is a high-confidence filter request, filter locally instead of calling Yelp
+    if (followUpAnalysis.isFilter && followUpAnalysis.confidence === 'high' && hasExistingResults) {
+      const { filtered, applied, noMatch } = filterVenues(previousVenues, followUpAnalysis.detectedFilters);
+      const responseMessage = generateFilterResponse(filtered, applied, previousVenues);
+
+      console.log('[Filter Result]', {
+        originalCount: previousVenues.length,
+        filteredCount: filtered.length,
+        appliedFilters: applied,
+      });
+
+      return Response.json({
+        message: responseMessage,
+        venues: filtered,
+        chatId, // Keep the same chatId for conversation continuity
+        wasFiltered: true,
+        appliedFilters: applied,
+      });
     }
 
     // Check if API key is configured
