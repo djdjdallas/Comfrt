@@ -73,3 +73,85 @@ export function TypingIndicator() {
     </div>
   );
 }
+
+import { useState, useEffect } from 'react';
+
+const PROGRESS_MESSAGES = [
+  "Searching for places nearby...",
+  "Reading through reviews...",
+  "Checking noise levels and atmosphere...",
+  "Finding the calmest spots for you...",
+  "Almost there...",
+];
+
+export function SearchProgress() {
+  const [messageIndex, setMessageIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMessageIndex(prev =>
+        prev < PROGRESS_MESSAGES.length - 1 ? prev + 1 : prev
+      );
+    }, 4000); // Change message every 4 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div style={{
+      display: 'flex',
+      justifyContent: 'flex-start',
+      marginBottom: '16px'
+    }}>
+      <div style={{
+        padding: '16px 20px',
+        borderRadius: '20px',
+        backgroundColor: '#ffffff',
+        border: '1px solid #f3f1ed',
+        borderBottomLeftRadius: '6px',
+        boxShadow: '0 2px 8px rgba(61, 61, 61, 0.04)',
+        minWidth: '200px',
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+        }}>
+          {/* Animated dots */}
+          <div style={{ display: 'flex', gap: '4px' }}>
+            <span style={{
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
+              backgroundColor: '#96a87f',
+              animation: 'typingBounce 1.4s ease-in-out infinite',
+            }} />
+            <span style={{
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
+              backgroundColor: '#96a87f',
+              animation: 'typingBounce 1.4s ease-in-out infinite 0.2s',
+            }} />
+            <span style={{
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
+              backgroundColor: '#96a87f',
+              animation: 'typingBounce 1.4s ease-in-out infinite 0.4s',
+            }} />
+          </div>
+          {/* Progress message */}
+          <p style={{
+            fontSize: '15px',
+            color: '#6b6b6b',
+            margin: 0,
+            fontStyle: 'italic',
+          }}>
+            {PROGRESS_MESSAGES[messageIndex]}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

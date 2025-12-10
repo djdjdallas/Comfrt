@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Send, Sparkles, Map } from 'lucide-react';
-import ChatBubble, { TypingIndicator } from './ChatBubble';
+import ChatBubble, { TypingIndicator, SearchProgress } from './ChatBubble';
 import VenueCard, { VenueCardCompact } from './VenueCard';
 import { useRouter } from 'next/navigation';
 import { trackSearch } from '@/lib/analytics';
@@ -312,7 +312,7 @@ export default function ChatInterface() {
                 )}
               </div>
             ))}
-            {isLoading && <TypingIndicator />}
+            {isLoading && <SearchProgress />}
             <div ref={messagesEndRef} />
           </div>
         )}
